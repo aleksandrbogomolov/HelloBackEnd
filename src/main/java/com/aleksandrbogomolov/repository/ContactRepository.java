@@ -9,5 +9,5 @@ import java.util.List;
  */
 public interface ContactRepository {
 
-    List<Contact> getAll();
+    List<Contact> getLimitAll(int offset);
 }

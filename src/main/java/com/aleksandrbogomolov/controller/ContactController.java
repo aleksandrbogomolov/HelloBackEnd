@@ -25,7 +25,8 @@ public class ContactController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<Contact> getFilteredContact(@RequestParam(name = "nameFilter") String regex) {
-        return service.getFilteredContacts(regex);
+    public List<Contact> getFilteredContact(@RequestParam(name = "nameFilter") String regex,
+                                            @RequestParam(name = "offset") int offset) {
+        return service.getFilteredContacts(regex, offset);
     }
 }

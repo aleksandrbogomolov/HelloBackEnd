@@ -22,7 +22,7 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public List<Contact> getFilteredContacts(String regex) {
-        return repository.getAll().stream().filter(c -> !c.getName().matches(regex)).collect(Collectors.toList());
+    public List<Contact> getFilteredContacts(String regex, int offset) {
+        return repository.getLimitAll(offset).stream().filter(c -> !c.getName().matches(regex)).collect(Collectors.toList());
     }
 }
