@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by aleksandrbogomolov on 9/23/16.
@@ -21,7 +22,7 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public List<Contact> getAll() {
-        return repository.getAll();
+    public List<Contact> getFilteredContacts(String regex) {
+        return repository.getAll().stream().filter(c -> !c.getName().matches(regex)).collect(Collectors.toList());
     }
 }

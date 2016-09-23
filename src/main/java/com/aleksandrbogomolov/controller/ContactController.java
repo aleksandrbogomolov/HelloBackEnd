@@ -5,6 +5,7 @@ import com.aleksandrbogomolov.service.ContactService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
  * Created by aleksandrbogomolov on 9/23/16.
  */
 @RestController
-@RequestMapping(value = "/hello/contact")
+@RequestMapping(value = "/hello/contacts")
 public class ContactController {
 
     private final ContactService service;
@@ -24,7 +25,7 @@ public class ContactController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<Contact> getFilteredContact() {
-        return service.getAll();
+    public List<Contact> getFilteredContact(@RequestParam(name = "nameFilter") String regex) {
+        return service.getFilteredContacts(regex);
     }
 }

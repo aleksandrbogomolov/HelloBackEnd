@@ -1,4 +1,4 @@
-package com.aleksandrbogomolov.repository.datajpa;
+package com.aleksandrbogomolov.repository.jdbc;
 
 import com.aleksandrbogomolov.entity.Contact;
 import com.aleksandrbogomolov.repository.ContactRepository;
