@@ -9,5 +9,5 @@ import java.util.List;
  */
 public interface ContactService {
 
-    List<Contact> getFilteredContacts(String regex, int offset);
+    List<Contact> getFilteredContacts(String regex, int offset, int limit);
 }

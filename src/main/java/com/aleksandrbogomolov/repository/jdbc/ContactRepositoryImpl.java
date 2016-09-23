@@ -28,7 +28,7 @@ public class ContactRepositoryImpl implements ContactRepository {
     }
 
     @Override
-    public List<Contact> getLimitAll(int offset) {
-        return template.query("SELECT * FROM contacts ORDER BY id OFFSET ? LIMIT 5", mapper, offset);
+    public List<Contact> getLimitAll(int offset, int limit) {
+        return template.query("SELECT * FROM contacts ORDER BY id OFFSET ? LIMIT ?", mapper, offset, limit);
     }
 }
