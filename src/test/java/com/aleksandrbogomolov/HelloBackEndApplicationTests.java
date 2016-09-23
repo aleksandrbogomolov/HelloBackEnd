@@ -12,5 +12,4 @@ public class HelloBackEndApplicationTests {
 	@Test
 	public void contextLoads() {
 	}
-
 }
