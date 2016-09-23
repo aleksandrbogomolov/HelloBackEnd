@@ -1,19 +1,12 @@
 package com.aleksandrbogomolov.entity;
 
-import javax.persistence.*;
-
 /**
  * Created by aleksandrbogomolov on 9/23/16.
  */
-@Entity
-@Table(name = "contacts")
 public class Contact {
 
-    @Id
-    @GeneratedValue
     private long id;
 
-    @Column(name = "name")
     private String name;
 
     public Contact() {
