@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, properties = "server.port=8888")
 public class ContactControllerTest extends AbstractTest {
 
-    private final String url = "htt://localhost:8888/hello/contacts?nameFilter=";
+    private final String url = "http://localhost:8888/hello/contacts?nameFilter=";
 
     private final String contentType = "application/json;charset=UTF-8";
 
