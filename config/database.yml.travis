@@ -1,5 +1,6 @@
-postgres:
+defaults:
   - adapter: postgresql
+  - encoding: utf8
   - database: helloBackEnd
   - username: aleksandrbogomolov
   - password: password
