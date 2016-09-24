@@ -1,3 +1,15 @@
 language: java
 jdk:
   - oraclejdk8
+
+services:
+  - postgresql
+
+before_script:
+  - psql -c 'create database helloBackEnd;' -U postgres
+
+postgres:
+  - adapter: postgresql
+  - database: helloBackEnd
+  - username: user
+  - password: password
