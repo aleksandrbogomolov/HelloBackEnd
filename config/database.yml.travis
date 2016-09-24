@@ -1,4 +1,4 @@
-defaults: &default
+test:
   - adapter: postgresql
   - encoding: utf8
   - database: helloBackEnd
