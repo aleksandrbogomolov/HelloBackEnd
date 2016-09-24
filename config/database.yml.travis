@@ -1,4 +1,4 @@
-defaults:
+defaults: &default
   - adapter: postgresql
   - encoding: utf8
   - database: helloBackEnd
