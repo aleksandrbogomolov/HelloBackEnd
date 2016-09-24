@@ -47,4 +47,10 @@ public class ContactControllerTest extends AbstractTest {
               .then().statusCode(200).contentType(contentType)
               .body("name", Matchers.hasItems("Aleksandr", "Boris", "Fedor", "Grigoriy", "Petrov"));
     }
+
+    @Test
+    public void noContent() throws Exception {
+        when().get(url + "^.*$")
+              .then().statusCode(204);
+    }
 }

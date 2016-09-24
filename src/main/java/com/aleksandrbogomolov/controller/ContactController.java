@@ -3,6 +3,8 @@ package com.aleksandrbogomolov.controller;
 import com.aleksandrbogomolov.entity.Contact;
 import com.aleksandrbogomolov.service.ContactService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,9 +27,17 @@ public class ContactController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<Contact> getFilteredContact(@RequestParam(name = "nameFilter") String regex,
-                                            @RequestParam(name = "offset", required = false) Integer offset,
-                                            @RequestParam(name = "limit", required = false) Integer limit) {
-        return service.getFilteredContacts(regex, offset == null? 0 : offset, limit == null || limit > 50 ? 5: limit);
+    public ResponseEntity<List<Contact>> getFilteredContact(
+            @RequestParam(name = "nameFilter") String regex,
+            @RequestParam(name = "offset", required = false) Integer offset,
+            @RequestParam(name = "limit", required = false) Integer limit) {
+
+        int offsetParam = offset == null ? 0 : offset;
+        int limitParam = limit == null || limit > 50 ? 5 : limit;
+
+        List<Contact> contacts = service.getFilteredContacts(regex, offsetParam, limitParam);
+
+        if (contacts.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(contacts, HttpStatus.OK);
     }
 }
