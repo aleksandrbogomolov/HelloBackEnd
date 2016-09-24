@@ -5,8 +5,12 @@ jdk:
 services:
   - postgresql
 
+script:
+  - RAILS_ENV=test bundle exec rake db:migrate --trace
+  - bundle exec rake db:test:prepare
+  - bundle exec rake
+
 before_script:
-#  - cp config/database.yml.travis config/database.yml
+  - cp config/database.yml.travis config/database.yml
   - psql -c 'create database helloBackEnd;' -U postgres
   - psql -c "CREATE USER aleksandrbogomolov WITH PASSWORD 'password';" -U postgres
-#  - psql -U postgres -c "create extension postgis"
