@@ -1,4 +1,4 @@
-package com.aleksandrbogomolov.service;
+package com.aleksandrbogomolov.controller;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -7,18 +7,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static io.restassured.RestAssured.when;
+import static org.junit.Assert.*;
 
 /**
- * Created by aleksandrbogomolov on 9/23/16.
+ * Created by aleksandrbogomolov on 9/24/16.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
-public class ContactServiceImplTest {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+public class ContactControllerTest {
 
     @Test
     public void getFilteredContacts() throws Exception {
         when().get("http://localhost:8080/hello/contacts?nameFilter=^A.*$&offset=0&limit=5")
-              .then().statusCode(200)
+              .then().statusCode(200).contentType("application/json;charset=UTF-8")
               .body("name", Matchers.hasItems("Boris", "Fedor", "Grigoriy", "Petrov"));
     }
 }

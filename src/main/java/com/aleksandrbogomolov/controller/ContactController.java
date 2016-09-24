@@ -26,8 +26,8 @@ public class ContactController {
 
     @RequestMapping(method = RequestMethod.GET)
     public List<Contact> getFilteredContact(@RequestParam(name = "nameFilter") String regex,
-                                            @RequestParam(name = "offset") int offset,
+                                            @RequestParam(name = "offset", required = false) Integer offset,
                                             @RequestParam(name = "limit", required = false) Integer limit) {
-        return service.getFilteredContacts(regex, offset, limit == null? 5: limit);
+        return service.getFilteredContacts(regex, offset == null? 0 : offset, limit == null? 5: limit);
     }
 }
