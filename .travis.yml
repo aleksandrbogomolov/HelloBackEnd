@@ -7,10 +7,10 @@ services:
 
 before_script:
   - psql -c 'create database helloBackEnd;' -U postgres
-  - psql -c "CREATE USER user WITH PASSWORD 'password';" -U postgres
+  - psql -c "CREATE USER aleksandrbogomolov WITH PASSWORD 'password';" -U postgres
 
 postgres:
   - adapter: postgresql
   - database: helloBackEnd
-  - username: user
+  - username: aleksandrbogomolov
   - password: password
