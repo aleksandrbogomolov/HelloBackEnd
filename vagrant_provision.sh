@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 sudo apt-get update
-sudo apt-get install language-pack-UTF-8
 
 echo "Installing Git.."
 sudo apt-get install -y git
@@ -17,7 +16,7 @@ echo debconf shared/accepted-oracle-license-v1-1 seen true | /usr/bin/debconf-se
 apt-get install --yes oracle-java8-installer
 yes "" | apt-get -f install
 
-# Install the postgres key
+echo "Install the PostgreSQL.."
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 sudo echo "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main 9.4" >> pgdg.list
 sudo cp pgdg.list /etc/apt/sources.list.d/pgdg.list
