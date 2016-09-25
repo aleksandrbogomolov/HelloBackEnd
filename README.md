@@ -33,3 +33,9 @@ __/hello/contacts?nameFilter=^A.*$&offset=0&limit=5__
 Примеры запросов  
 [http://localhost:8080/hello/contacts?nameFilter=^A.\*$&offset=0&limit=5](http://localhost:8080/hello/contacts?nameFilter=^A.\*$&offset=0&limit=5) - возвращает часть контактов, которые НЕ начинаются с A.  
 [http://localhost:8080/hello/contacts?nameFilter=^.*[ai].*$&offset=0&limit=5](http://localhost:8080/hello/contacts?nameFilter=^.*[ai].*$&offset=0&limit=5) - возвращает часть контактов, которые НЕ содержат букв a, i.
+
+Запуск приложения с использованием **Vagrant**. Создать отдельную папку для проекта, например **workspace**, склонировать в данную папку [репозиторий](https://github.com/aleksandrbogomolov/HelloBackEnd.git), перенести файлы **Vagrantfile** и **vagrant_provision.sh** из корня проекта в корень папки **workspace**. Перейти в терминале в папку **workspace**, выполнить команду **vagrant up**, после запуска виртуальной машины подключится к ней выполнив команду **vagrant ssh**, перейти в каталог с проектом **cd vagrant/HelloBackEnd** выполнить его сборку **mvn package** и после окончания сборки запустить **java -jar target/hellobackend-0.0.1-SNAPSHOT.jar**. 
+  
+Примеры запросов для Vagrant  
+[http://192.168.33.10:8080/hello/contacts?nameFilter=^A.\*$&offset=0&limit=5](http://192.168.33.10:8080/hello/contacts?nameFilter=^A.\*$&offset=0&limit=5) - возвращает часть контактов, которые НЕ начинаются с A.  
+[http://192.168.33.10:8080/hello/contacts?nameFilter=^.*[ai].*$&offset=0&limit=5](http://192.168.33.10:8080/hello/contacts?nameFilter=^.*[ai].*$&offset=0&limit=5) - возвращает часть контактов, которые НЕ содержат букв a, i.
