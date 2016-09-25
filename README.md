@@ -28,7 +28,7 @@ __/hello/contacts?nameFilter=^A.*$&offset=0&limit=5__
 Параметры **offset** и **limit** добавлены для исключения единовременной загрузки большого количества данных из БД и порционной выборки данных, данные параметры не обязательны в строке запроса, при их отсутсвии заполнение происходит при формировании запроса к БД предустановленными значениями. Для загрузки следующей порции данных необходимо использовать параметр **offset**, например **offset=5** выберет следующий набор данных начиная с 6 строки.
 
  
-Для запуска приложения на локальном компьетере необходимо создать в PostgreSQL БД **"helloBackEnd"**, в файле **/resources/application.yml** изменить **username** и **password** для доступа к созданной локальной базе, склонировать данный [репозиторий](https://github.com/aleksandrbogomolov/HelloBackEnd.git), перейти в терминале в созданный каталог и выполнить команды **mvn package** и **java -jar target/hellobackend-0.0.1-SNAPSHOT.jar**.     
+Для запуска приложения на локальном компьетере необходимо создать в PostgreSQL БД **"helloBackEnd"**, склонировать данный [репозиторий](https://github.com/aleksandrbogomolov/HelloBackEnd.git), в файле **/resources/application.yml** изменить **username** и **password** для доступа к созданной локальной базе, перейти в терминале в созданный каталог и выполнить команды **mvn package** и **java -jar target/hellobackend-0.0.1-SNAPSHOT.jar**.     
 
 Примеры запросов  
 [http://localhost:8080/hello/contacts?nameFilter=^A.\*$&offset=0&limit=5](http://localhost:8080/hello/contacts?nameFilter=^A.\*$&offset=0&limit=5) - возвращает часть контактов, которые НЕ начинаются с A.  
