@@ -9,5 +9,5 @@ import java.util.List;
  */
 public interface ContactRepository {
 
-    List<Contact> getLimitAll(int lastId, int limit);
+    List<Contact> getLimitAll(long lastId, int limit);
 }

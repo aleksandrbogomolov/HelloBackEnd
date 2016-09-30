@@ -5,6 +5,7 @@ import com.aleksandrbogomolov.repository.ContactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -23,8 +24,14 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public List<Contact> getFilteredContacts(String regex, int lastId, int limit) {
+    public List<Contact> getFilteredContacts(String regex, long lastId, int limit) {
         Pattern p = Pattern.compile(regex);
-        return repository.getLimitAll(lastId, limit).stream().filter(c -> !p.matcher(c.getName()).find()).collect(Collectors.toList());
+        List<Contact> contacts = new ArrayList<>();
+        List<Contact> query;
+        while ((query = repository.getLimitAll(lastId, limit)).size() != 0) {
+            contacts.addAll(query.stream().filter(c -> !p.matcher(c.getName()).find()).collect(Collectors.toList()));
+            lastId = contacts.size() == 0 ? lastId + limit : contacts.get(contacts.size() - 1).getId();
+        }
+        return contacts.size() > limit ? contacts.subList(0, limit) : contacts;
     }
 }
