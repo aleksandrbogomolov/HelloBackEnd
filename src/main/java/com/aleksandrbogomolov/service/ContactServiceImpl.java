@@ -23,8 +23,8 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public List<Contact> getFilteredContacts(String regex, int offset, int limit) {
+    public List<Contact> getFilteredContacts(String regex, int lastId, int limit) {
         Pattern p = Pattern.compile(regex);
-        return repository.getLimitAll(offset, limit).stream().filter(c -> !p.matcher(c.getName()).find()).collect(Collectors.toList());
+        return repository.getLimitAll(lastId, limit).stream().filter(c -> !p.matcher(c.getName()).find()).collect(Collectors.toList());
     }
 }

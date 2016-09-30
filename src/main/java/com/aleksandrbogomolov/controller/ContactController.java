@@ -33,15 +33,15 @@ public class ContactController {
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<Contact>> getFilteredContact(
             @RequestParam(name = "nameFilter") String regex,
-            @RequestParam(name = "offset", required = false) Integer offset,
+            @RequestParam(name = "lastId", required = false) Integer lastId,
             @RequestParam(name = "limit", required = false) Integer limit) {
 
         log.info("Get filtered contacts");
 
-        int offsetParam = offset == null ? 0 : offset;
+        int lastIdParam = lastId == null ? 0 : lastId;
         int limitParam = limit == null || limit > 5 ? 5 : limit;
 
-        List<Contact> contacts = service.getFilteredContacts(regex, offsetParam, limitParam);
+        List<Contact> contacts = service.getFilteredContacts(regex, lastIdParam, limitParam);
 
         if (contacts.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         return new ResponseEntity<>(contacts, HttpStatus.OK);
