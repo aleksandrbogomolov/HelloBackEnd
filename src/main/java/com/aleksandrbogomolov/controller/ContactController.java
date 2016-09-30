@@ -36,14 +36,19 @@ public class ContactController {
             @RequestParam(name = "lastId", required = false) Long lastId,
             @RequestParam(name = "limit", required = false) Integer limit) {
 
-        log.info("Get filtered contacts");
+        if (limit != null && limit > 5) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         long lastIdParam = lastId == null ? 0 : lastId;
-        int limitParam = limit == null || limit > 5 ? 5 : limit;
+        int limitParam = limit == null ? 5 : limit;
 
         List<Contact> contacts = service.getFilteredContacts(regex, lastIdParam, limitParam);
 
-        if (contacts.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        if (contacts.isEmpty()) {
+            log.info("Contacts Not Found");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        log.info("Get filtered contacts");
         return new ResponseEntity<>(contacts, HttpStatus.OK);
     }
 }

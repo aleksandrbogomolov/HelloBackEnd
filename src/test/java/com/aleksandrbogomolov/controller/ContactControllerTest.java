@@ -55,6 +55,6 @@ public class ContactControllerTest extends AbstractTest {
     @Test
     public void noContent() throws Exception {
         when().get(url + "^.*$")
-              .then().statusCode(204);
+              .then().statusCode(404);
     }
 }
