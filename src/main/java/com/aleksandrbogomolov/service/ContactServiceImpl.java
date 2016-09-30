@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -23,6 +25,7 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public List<Contact> getFilteredContacts(String regex, int offset, int limit) {
-        return repository.getLimitAll(offset, limit).stream().filter(c -> !c.getName().matches(regex)).collect(Collectors.toList());
+        Pattern p = Pattern.compile(regex);
+        return repository.getLimitAll(offset, limit).stream().filter(c -> !p.matcher(c.getName()).find()).collect(Collectors.toList());
     }
 }

@@ -39,7 +39,7 @@ public class ContactController {
         log.info("Get filtered contacts");
 
         int offsetParam = offset == null ? 0 : offset;
-        int limitParam = limit == null || limit > 50 ? 5 : limit;
+        int limitParam = limit == null || limit > 50 ? 50 : limit;
 
         List<Contact> contacts = service.getFilteredContacts(regex, offsetParam, limitParam);
 
