@@ -30,11 +30,13 @@ public class ContactServiceImpl implements ContactService {
         this.repository = repository;
     }
 
+    //После запуска приложения выбираем из БД таблицу с рейтами
     @PostConstruct
     public void setRates() {
         repository.getRates().forEach(r -> rates.put(r.getRegex(), r));
     }
 
+    //Перед остановкой приложения сохраняем рейты в БД
     @PreDestroy
     @Override
     public void saveRates() {
@@ -47,7 +49,6 @@ public class ContactServiceImpl implements ContactService {
     public List<Contact> getFilteredContacts(String regex, long lastId, int limit) {
         Pattern p = Pattern.compile(regex);
         List<Contact> contacts = new ArrayList<>();
-        List<Contact> query;
         int rate, count = 0;
 
         if (rates.get(regex) == null) {
@@ -55,11 +56,29 @@ public class ContactServiceImpl implements ContactService {
             rate = 0;
         } else rate = rates.get(regex).getRate();
 
+        List<Contact> query;
         while (contacts.size() < limit && (query = repository.getLimitAll(lastId, limit + rate)).size() != 0) {
-            contacts.addAll(query.stream().filter(c -> !p.matcher(c.getName()).find()).collect(Collectors.toList()));
+            List<Contact> tempList = query.stream().filter(c -> !p.matcher(c.getName()).find()).collect(Collectors.toList());
+            contacts.addAll(tempList);
             lastId = contacts.size() == 0 ? lastId + limit : contacts.get(contacts.size() - 1).getId();
-            rate++; count++;
+
+            if (tempList.size() > limit && count == 0) {
+                incrementRate(regex, tempList.size(), limit);
+            } else {
+                rate++; count++;
+            }
         }
+        if (count > 1) {
+            rates.get(regex).setRate(rate - 1);
+        }
+
         return contacts.size() > limit ? contacts.subList(0, limit) : contacts;
+    }
+
+    private void incrementRate(String regex, int size, int limit) {
+        if ((size - limit) > ((limit * 20) / 100)) {
+            RegexRate rate = rates.get(regex);
+            rate.setRate(rate.getRate() - 1);
+        }
     }
 }
