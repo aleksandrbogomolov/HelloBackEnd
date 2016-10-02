@@ -28,7 +28,7 @@ public class ContactServiceImpl implements ContactService {
         Pattern p = Pattern.compile(regex);
         List<Contact> contacts = new ArrayList<>();
         List<Contact> query;
-        while (contacts.size() < limit && (query = repository.getLimitAll(lastId, limit)).size() != 0) {
+        while (contacts.size() < limit && (query = repository.getLimitAll(lastId, limit * 2)).size() != 0) {
             contacts.addAll(query.stream().filter(c -> !p.matcher(c.getName()).find()).collect(Collectors.toList()));
             lastId = contacts.size() == 0 ? lastId + limit : contacts.get(contacts.size() - 1).getId();
         }
