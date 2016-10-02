@@ -28,10 +28,10 @@ public class ContactServiceImpl implements ContactService {
         Pattern p = Pattern.compile(regex);
         List<Contact> contacts = new ArrayList<>();
         List<Contact> query;
-        while ((query = repository.getLimitAll(lastId, limit)).size() != 0) {
+        while (contacts.size() < limit && (query = repository.getLimitAll(lastId, limit)).size() != 0) {
             contacts.addAll(query.stream().filter(c -> !p.matcher(c.getName()).find()).collect(Collectors.toList()));
             lastId = contacts.size() == 0 ? lastId + limit : contacts.get(contacts.size() - 1).getId();
         }
-        return contacts.size() > limit ? contacts.subList(0, limit) : contacts;
+        return contacts.size() > limit ? contacts.subList(0 , limit) : contacts;
     }
 }
