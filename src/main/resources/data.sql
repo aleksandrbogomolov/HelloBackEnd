@@ -1,4 +1,5 @@
 DELETE FROM contacts;
+DELETE FROM rates;
 ALTER SEQUENCE global_seq RESTART WITH 10;
 
 INSERT INTO contacts (name) VALUES ('Aleksandr');

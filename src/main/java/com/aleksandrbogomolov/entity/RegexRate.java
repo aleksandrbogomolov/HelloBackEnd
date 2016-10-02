@@ -1,5 +1,7 @@
 package com.aleksandrbogomolov.entity;
 
+import com.google.common.base.Objects;
+
 /**
  * Created by aleksandrbogomolov on 10/2/16.
  */
@@ -51,12 +53,26 @@ public class RegexRate {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RegexRate)) return false;
+        RegexRate rate1 = (RegexRate) o;
+        return rate == rate1.rate &&
+               Objects.equal(regex, rate1.regex);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(regex, rate);
+    }
+
+    @Override
     public String toString() {
-        return "RegexRate{" +
-               "id=" + id +
-               ", regex='" + regex + '\'' +
-               ", rate=" + rate +
-               '}';
+        return Objects.toStringHelper(this)
+                      .add("id", id)
+                      .add("regex", regex)
+                      .add("rate", rate)
+                      .toString();
     }
 
     public boolean isNew() {

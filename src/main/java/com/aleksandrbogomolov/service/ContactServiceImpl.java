@@ -23,7 +23,7 @@ public class ContactServiceImpl implements ContactService {
 
     private final ContactRepository repository;
 
-    private Map<String, RegexRate> rates = new HashMap<>();
+    static Map<String, RegexRate> rates = new HashMap<>();
 
     @Autowired
     public ContactServiceImpl(ContactRepository repository) {
@@ -38,7 +38,9 @@ public class ContactServiceImpl implements ContactService {
     @PreDestroy
     @Override
     public void saveRates() {
-        repository.saveRates((List<RegexRate>) rates.values());
+        if (rates.size() > 0) {
+            repository.saveRates(rates.values());
+        }
     }
 
     @Override

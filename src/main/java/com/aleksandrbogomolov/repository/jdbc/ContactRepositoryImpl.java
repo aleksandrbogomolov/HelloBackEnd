@@ -3,16 +3,21 @@ package com.aleksandrbogomolov.repository.jdbc;
 import com.aleksandrbogomolov.entity.Contact;
 import com.aleksandrbogomolov.entity.RegexRate;
 import com.aleksandrbogomolov.repository.ContactRepository;
+import com.google.common.collect.ImmutableList;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by aleksandrbogomolov on 9/23/16.
@@ -42,8 +47,39 @@ public class ContactRepositoryImpl implements ContactRepository {
         return template.query("SELECT * FROM rates", rateMapper);
     }
 
+    @Transactional
     @Override
-    public void saveRates(List<RegexRate> rates) {
+    public void saveRates(Collection<RegexRate> rates) {
+        ImmutableList<RegexRate> newRates = ImmutableList.copyOf(rates.stream().filter(RegexRate::isNew).collect(Collectors.toList()));
+        Iterator<RegexRate> iteratorIsNew = newRates.iterator();
+        template.batchUpdate("INSERT INTO rates (regex, rate) VALUES (?, ?)", new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                RegexRate rate = iteratorIsNew.next();
+                ps.setString(1, rate.getRegex());
+                ps.setInt(2, rate.getRate());
+            }
 
+            @Override
+            public int getBatchSize() {
+                return newRates.size();
+            }
+        });
+        ImmutableList<RegexRate> oldRates = ImmutableList.copyOf(rates.stream().filter(r -> !r.isNew()).collect(Collectors.toList()));
+        Iterator<RegexRate> iterator = oldRates.iterator();
+        template.batchUpdate("UPDATE rates SET regex = ?, rate = ? WHERE id = ?", new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                RegexRate rate = iterator.next();
+                ps.setString(1, rate.getRegex());
+                ps.setInt(2, rate.getRate());
+                ps.setInt(3, rate.getId());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return oldRates.size();
+            }
+        });
     }
 }

@@ -3,6 +3,7 @@ package com.aleksandrbogomolov.repository;
 import com.aleksandrbogomolov.entity.Contact;
 import com.aleksandrbogomolov.entity.RegexRate;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -15,5 +16,5 @@ public interface ContactRepository {
 
     List<RegexRate> getRates();
 
-    void saveRates(List<RegexRate> rates);
+    void saveRates(Collection<RegexRate> rates);
 }
