@@ -22,3 +22,6 @@ INSERT INTO contacts (name) VALUES ('Grigoriy2');
 INSERT INTO contacts (name) VALUES ('Petrov2');
 INSERT INTO contacts (name) VALUES ('Ivanov2');
 INSERT INTO contacts (name) VALUES ('Vasechkin2');
+
+INSERT INTO rates (regex, rate) VALUES ('^A.*$', 0);
+INSERT INTO rates (regex, rate) VALUES ('^.*[ai].*$', 0);

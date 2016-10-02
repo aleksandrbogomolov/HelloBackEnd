@@ -1,6 +1,7 @@
 package com.aleksandrbogomolov.service;
 
 import com.aleksandrbogomolov.entity.Contact;
+import com.aleksandrbogomolov.entity.RegexRate;
 
 import java.util.List;
 
@@ -10,4 +11,6 @@ import java.util.List;
 public interface ContactService {
 
     List<Contact> getFilteredContacts(String regex, long lastId, int limit);
+
+    void saveRates();
 }
