@@ -50,6 +50,8 @@ public class ContactRepositoryImpl implements ContactRepository {
     @Transactional
     @Override
     public void saveRates(Collection<RegexRate> rates) {
+        //Разделяем данные рейтов на новые и старые и сохраняем в БД
+        //-Новые
         ImmutableList<RegexRate> newRates = ImmutableList.copyOf(rates.stream().filter(RegexRate::isNew).collect(Collectors.toList()));
         Iterator<RegexRate> iteratorIsNew = newRates.iterator();
         template.batchUpdate("INSERT INTO rates (regex, rate) VALUES (?, ?)", new BatchPreparedStatementSetter() {
@@ -65,6 +67,7 @@ public class ContactRepositoryImpl implements ContactRepository {
                 return newRates.size();
             }
         });
+        //-Старые
         ImmutableList<RegexRate> oldRates = ImmutableList.copyOf(rates.stream().filter(r -> !r.isNew()).collect(Collectors.toList()));
         Iterator<RegexRate> iterator = oldRates.iterator();
         template.batchUpdate("UPDATE rates SET regex = ?, rate = ? WHERE id = ?", new BatchPreparedStatementSetter() {
