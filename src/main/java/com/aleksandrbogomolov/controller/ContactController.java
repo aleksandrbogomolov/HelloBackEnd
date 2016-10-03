@@ -33,6 +33,7 @@ public class ContactController {
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<Contact>> getFilteredContact(
             @RequestParam(name = "nameFilter") String regex,
+            @RequestParam(name = "forward") Boolean forward,
             @RequestParam(name = "lastId", required = false) Long lastId,
             @RequestParam(name = "limit", required = false) Integer limit) {
 
@@ -41,7 +42,7 @@ public class ContactController {
         long lastIdParam = lastId == null ? 0 : lastId;
         int limitParam = limit == null ? 5 : limit;
 
-        List<Contact> contacts = service.getFilteredContacts(regex, lastIdParam, limitParam);
+        List<Contact> contacts = service.getFilteredContacts(regex, forward, lastIdParam, limitParam);
 
         if (contacts.isEmpty()) {
             log.info("Contacts Not Found");
