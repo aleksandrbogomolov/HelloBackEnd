@@ -3,6 +3,8 @@ package com.aleksandrbogomolov.service;
 import com.aleksandrbogomolov.entity.Contact;
 import com.aleksandrbogomolov.entity.RegexRate;
 import com.aleksandrbogomolov.repository.ContactRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,8 @@ import java.util.stream.Collectors;
 @Service
 public class ContactServiceImpl implements ContactService {
 
+    private final Logger log = LoggerFactory.getLogger(ContactServiceImpl.class);
+
     private final ContactRepository repository;
 
     static Map<String, RegexRate> rates = new HashMap<>();
@@ -33,6 +37,7 @@ public class ContactServiceImpl implements ContactService {
     //После запуска приложения выбираем из БД таблицу с рейтами
     @PostConstruct
     public void setRates() {
+        log.info("Get rates from DB");
         repository.getRates().forEach(r -> rates.put(r.getRegex(), r));
     }
 
@@ -41,6 +46,7 @@ public class ContactServiceImpl implements ContactService {
     @Override
     public void saveRates() {
         if (rates.size() > 0) {
+            log.info("Save rates to DB");
             repository.saveRates(rates.values());
         }
     }
@@ -57,6 +63,7 @@ public class ContactServiceImpl implements ContactService {
         if (rates.get(regex) == null) {
             rates.put(regex, new RegexRate(regex, 0));
             rate = 0;
+            log.info("Create new RegexRate with regex = {}", regex);
         } else rate = rates.get(regex).getRate();
 
         List<Contact> query;
@@ -83,6 +90,7 @@ public class ContactServiceImpl implements ContactService {
         //на величину равную количеству запросов.
         if (count > 1) {
             rates.get(regex).setRate(rate - 1);
+            log.info("Increment rate for regex = {}", regex);
         }
 
         //Возвращаем отфльтрованные данные в количестве равном limit.
@@ -94,6 +102,7 @@ public class ContactServiceImpl implements ContactService {
         if ((size - limit) > ((limit * 20) / 100)) {
             RegexRate rate = rates.get(regex);
             rate.setRate(rate.getRate() - 1);
+            log.info("Decrement rate for regex = {}", regex);
         }
     }
 }

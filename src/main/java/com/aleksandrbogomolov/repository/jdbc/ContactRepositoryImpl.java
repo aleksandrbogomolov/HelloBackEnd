@@ -4,6 +4,8 @@ import com.aleksandrbogomolov.entity.Contact;
 import com.aleksandrbogomolov.entity.RegexRate;
 import com.aleksandrbogomolov.repository.ContactRepository;
 import com.google.common.collect.ImmutableList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -25,6 +27,8 @@ import java.util.stream.Collectors;
 @Repository
 @Transactional(readOnly = true)
 public class ContactRepositoryImpl implements ContactRepository {
+
+    private final Logger log = LoggerFactory.getLogger(ContactRepositoryImpl.class);
 
     private final JdbcTemplate template;
 
@@ -64,6 +68,7 @@ public class ContactRepositoryImpl implements ContactRepository {
 
             @Override
             public int getBatchSize() {
+                log.info("Save {} new RegexRate to DB", newRates.size());
                 return newRates.size();
             }
         });
@@ -81,6 +86,7 @@ public class ContactRepositoryImpl implements ContactRepository {
 
             @Override
             public int getBatchSize() {
+                log.info("Update {} RegexRate into DB", oldRates.size());
                 return oldRates.size();
             }
         });
