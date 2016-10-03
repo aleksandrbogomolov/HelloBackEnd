@@ -42,8 +42,13 @@ public class ContactRepositoryImpl implements ContactRepository {
     }
 
     @Override
-    public List<Contact> getLimitAll(long lastId, int limit) {
+    public List<Contact> getForwardLimitAll(long lastId, int limit) {
         return template.query("SELECT * FROM contacts WHERE id > ? ORDER BY id LIMIT ?", contactMapper, lastId, limit);
+    }
+
+    @Override
+    public List<Contact> getBackLimitAll(long lastId, int limit) {
+        return template.query("SELECT * FROM contacts WHERE id < ? ORDER BY id DESC LIMIT ?", contactMapper, lastId, limit);
     }
 
     @Override

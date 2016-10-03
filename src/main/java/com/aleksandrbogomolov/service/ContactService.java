@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface ContactService {
 
-    List<Contact> getFilteredContacts(String regex, long lastId, int limit);
+    List<Contact> getFilteredContacts(String regex, boolean forward, long lastId, int limit);
 
     void saveRates();
 }

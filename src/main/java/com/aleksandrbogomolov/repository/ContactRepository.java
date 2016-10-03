@@ -12,7 +12,9 @@ import java.util.Map;
  */
 public interface ContactRepository {
 
-    List<Contact> getLimitAll(long lastId, int limit);
+    List<Contact> getForwardLimitAll(long lastId, int limit);
+
+    List<Contact> getBackLimitAll(long lastId, int limit);
 
     List<RegexRate> getRates();
 

@@ -19,42 +19,49 @@ public class ContactControllerTest extends AbstractTest {
 
     @Test(expected = AssertionError.class)
     public void checkFilter() throws Exception {
-        when().get(url + "^A.*$&lastId=0&limit=5")
+        when().get(url + "^A.*$&forward=true&lastId=0&limit=5")
               .then().statusCode(200).contentType(contentType)
               .body("name", Matchers.hasItems("Aleksandr"));
     }
 
     @Test
     public void getFilteredContacts() throws Exception {
-        when().get(url + "^A.*$&lastId=0&limit=5")
+        when().get(url + "^A.*$&forward=true&lastId=0&limit=5")
               .then().statusCode(200).contentType(contentType)
               .body("name", Matchers.hasItems("Boris", "Fedor", "Grigoriy", "Petrov", "Ivanov"));
     }
 
     @Test
     public void getNextPageFilteredContacts() throws Exception {
-        when().get(url + "^A.*$&lastId=15&limit=5")
+        when().get(url + "^A.*$&forward=true&lastId=15&limit=5")
               .then().statusCode(200).contentType(contentType)
               .body("name", Matchers.hasItems("Vasechkin", "Boris1", "Fedor1", "Grigoriy1", "Petrov1"));
     }
 
     @Test
+    public void getPreviousPageFilteredContacts() throws Exception {
+        when().get(url + "^A.*$&forward=false&lastId=30&limit=5")
+              .then().statusCode(200).contentType(contentType)
+              .body("name", Matchers.hasItems("Grigoriy", "Petrov", "Ivanov", "Vasechkin", "Boris1"));
+    }
+
+    @Test
     public void getFilteredContactsWithoutParameters() throws Exception {
-        when().get(url + "^A.*$")
+        when().get(url + "^A.*$&forward=true")
               .then().statusCode(200).contentType(contentType)
               .body("name", Matchers.hasItems("Boris", "Fedor", "Grigoriy", "Petrov", "Ivanov"));
     }
 
     @Test
     public void getAll() throws Exception {
-        when().get(url + "^\\d.*$")
+        when().get(url + "^\\d.*$&forward=true")
               .then().statusCode(200).contentType(contentType)
               .body("name", Matchers.hasItems("Aleksandr", "Boris", "Fedor", "Grigoriy", "Petrov"));
     }
 
     @Test
     public void noContent() throws Exception {
-        when().get(url + "^.*$")
+        when().get(url + "^.*$&forward=true")
               .then().statusCode(404);
     }
 }

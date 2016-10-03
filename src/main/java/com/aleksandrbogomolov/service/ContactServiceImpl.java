@@ -34,14 +34,14 @@ public class ContactServiceImpl implements ContactService {
         this.repository = repository;
     }
 
-    //После запуска приложения выбираем из БД таблицу с рейтами
+    //После запуска приложения выбираем из БД таблицу с рейтами.
     @PostConstruct
     public void setRates() {
         log.info("Get rates from DB");
         repository.getRates().forEach(r -> rates.put(r.getRegex(), r));
     }
 
-    //Перед остановкой приложения сохраняем рейты в БД
+    //Перед остановкой приложения сохраняем рейты в БД.
     @PreDestroy
     @Override
     public void saveRates() {
@@ -52,13 +52,14 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public List<Contact> getFilteredContacts(String regex, long lastId, int limit) {
+    public List<Contact> getFilteredContacts(String regex, boolean forward, long lastId, int limit) {
         Pattern p = Pattern.compile(regex);
-        //Создаем список для сбора возвращаемых данных
+        //Создаем список для сбора отфильтрованных данных.
         List<Contact> contacts = new ArrayList<>();
-        //Создаем переменные для управления рейтом
-        int rate, count = 0;
-
+        //Создаем счетчик для цикла.
+        int count = 0;
+        //Создаем переменную для управления рейтом.
+        int rate;
         //Проверяем существует ли рейт по полученному регулярному выражению, если нет создаем новый RegexRate
         if (rates.get(regex) == null) {
             rates.put(regex, new RegexRate(regex, 0));
@@ -67,42 +68,54 @@ public class ContactServiceImpl implements ContactService {
         } else rate = rates.get(regex).getRate();
 
         List<Contact> query;
-        while (contacts.size() < limit && (query = repository.getLimitAll(lastId, limit + rate)).size() != 0) {
-            //Обрабатываем часть запроса и сохраняем во временной переменной
+        while (contacts.size() < limit && (query = getBackOrForwardFromRepo(forward, lastId, limit + rate)).size() != 0) {
+            //Обрабатываем часть запроса и сохраняем во временной переменной.
             List<Contact> tempList = query.stream().filter(c -> !p.matcher(c.getName()).find()).collect(Collectors.toList());
-            //Добавляем обработанные данные к списку возвращаемых данных
+            //Добавляем отфильтрованные данные к списку возвращаемых значений.
             contacts.addAll(tempList);
 
-            //Проверяем превышают ли количество строк полученных из БД необходимый лимит,
-            //Если да и это был первый запрос к БД вызываем метод уменьшения рейта.
-            if (tempList.size() > limit && count == 0) {
-                decrementRate(regex, tempList.size(), limit);
+            //Проверяем были ли получены данные, если нет смещаем параметр lastId на величину limit.
+            //иначе присваиваем lastId последний полученный из БД id.
+            if (forward) {
+                lastId = tempList.size() == 0 ? lastId + limit : contacts.get(contacts.size() - 1).getId();
             } else {
-                //Если нет то проверяем были ли вообще получены данные,
-                //если нет смещаем параметр lastId на величину limit.
-                //иначе присваиваем lastId последний полученный из БД id.
-                lastId = contacts.size() == 0 ? lastId + limit : contacts.get(contacts.size() - 1).getId();
-                //Увеличиваем счетчики рейта и количества запросов.
-                rate++; count++;
+                lastId = tempList.size() == 0 ? lastId - limit : contacts.get(contacts.size() - 1).getId();
             }
+            //Увеличиваем счетчики рейта и количества запросов.
+            rate++; count++;
         }
-        //После выхода из цикла проверяем количество запросов к БД, если больше 1, то увеличиваем рейт
-        //на величину равную количеству запросов.
-        if (count > 1) {
-            rates.get(regex).setRate(rate - 1);
-            log.info("Increment rate for regex = {}", regex);
-        }
+        //После выхода из цикла проверяем количество запросов к БД и необходимость в сохранении рейта
+        manipulateRate(regex, contacts.size(), limit, count, rate);
 
-        //Возвращаем отфльтрованные данные в количестве равном limit.
-        return contacts.size() > limit ? contacts.subList(0, limit) : contacts;
+        return sortResult(contacts);
     }
 
-    //Проверяем если разница в полученых за один запрос данных больше limit на 20%, то уменьшаем рейт
-    private void decrementRate(String regex, int size, int limit) {
-        if ((size - limit) > ((limit * 20) / 100)) {
-            RegexRate rate = rates.get(regex);
-            rate.setRate(rate.getRate() - 1);
-            log.info("Decrement rate for regex = {}", regex);
+    //Сортируем данные перед отправкой.
+    private List<Contact> sortResult(List<Contact> contacts) {
+        if (contacts.size() > 0) {
+            return contacts.stream().sorted((o1, o2) -> ((int) (o1.getId() - o2.getId()))).collect(Collectors.toList());
         }
+        else return contacts;
+    }
+
+    private List<Contact> getBackOrForwardFromRepo(boolean forward, long lastId, int limit) {
+        if (forward) return repository.getForwardLimitAll(lastId, limit);
+        else return repository.getBackLimitAll(lastId, limit);
+    }
+
+    private void manipulateRate(String regex, int size, int limit, int count, int rate) {
+        RegexRate regexRate = rates.get(regex);
+        if (size > limit && count == 1 && isExceeds(size, limit)) {
+            regexRate.setRate(regexRate.getRate() - 1);
+            log.info("Decrement rate for regex = {}", regex);
+        } else if (count > 1) {
+            regexRate.setRate(rate - 1);
+            log.info("Increment rate for regex = {}", regex);
+        }
+    }
+
+    //Проверяем превышает ли разница в полученых за один запрос данных больше limit на 20%
+    private boolean isExceeds(int size, int limit) {
+        return (size - limit) > ((limit * 20) / 100);
     }
 }
