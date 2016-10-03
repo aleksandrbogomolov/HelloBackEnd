@@ -37,7 +37,10 @@ public class ContactController {
             @RequestParam(name = "lastId", required = false) Long lastId,
             @RequestParam(name = "limit", required = false) Integer limit) {
 
-        if (limit != null && limit > 5) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (limit != null && limit > 5) {
+            log.info("Bad request, limit > default");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
         long lastIdParam = lastId == null ? 0 : lastId;
         int limitParam = limit == null ? 5 : limit;
