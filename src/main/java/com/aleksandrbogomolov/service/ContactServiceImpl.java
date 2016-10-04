@@ -87,13 +87,13 @@ public class ContactServiceImpl implements ContactService {
         //После выхода из цикла проверяем количество запросов к БД и необходимость в сохранении рейта
         manipulateRate(regex, contacts.size(), limit, count, rate);
 
-        return sortResult(contacts);
+        return prepareResult(contacts, limit);
     }
 
     //Сортируем данные перед отправкой.
-    private List<Contact> sortResult(List<Contact> contacts) {
+    private List<Contact> prepareResult(List<Contact> contacts, int limit) {
         if (contacts.size() > 0) {
-            return contacts.stream().sorted((o1, o2) -> ((int) (o1.getId() - o2.getId()))).collect(Collectors.toList());
+            return contacts.stream().sorted((o1, o2) -> ((int) (o1.getId() - o2.getId()))).collect(Collectors.toList()).subList(0, limit);
         }
         else return contacts;
     }
