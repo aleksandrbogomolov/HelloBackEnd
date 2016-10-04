@@ -77,9 +77,9 @@ public class ContactServiceImpl implements ContactService {
             //Проверяем были ли получены данные, если нет смещаем параметр lastId на величину limit.
             //иначе присваиваем lastId последний полученный из БД id.
             if (forward) {
-                lastId = tempList.size() == 0 ? lastId + limit : contacts.get(contacts.size() - 1).getId();
+                lastId = tempList.size() == 0 ? lastId + limit + rate : contacts.get(contacts.size() - 1).getId();
             } else {
-                lastId = tempList.size() == 0 ? lastId - limit : contacts.get(contacts.size() - 1).getId();
+                lastId = tempList.size() == 0 ? lastId - limit - rate : contacts.get(contacts.size() - 1).getId();
             }
             //Увеличиваем счетчики рейта и количества запросов.
             rate++; count++;
@@ -93,7 +93,7 @@ public class ContactServiceImpl implements ContactService {
     //Сортируем данные перед отправкой.
     private List<Contact> prepareResult(List<Contact> contacts, int limit) {
         if (contacts.size() > 0) {
-            return contacts.stream().sorted((o1, o2) -> ((int) (o1.getId() - o2.getId()))).collect(Collectors.toList()).subList(0, limit);
+            return contacts.subList(0, limit).stream().sorted((o1, o2) -> ((int) (o1.getId() - o2.getId()))).collect(Collectors.toList());
         }
         else return contacts;
     }
