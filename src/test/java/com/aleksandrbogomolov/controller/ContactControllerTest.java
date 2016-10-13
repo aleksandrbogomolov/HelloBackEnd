@@ -19,7 +19,7 @@ public class ContactControllerTest extends AbstractTest {
 
     @Test(expected = AssertionError.class)
     public void checkFilter() throws Exception {
-        when().get(url + "^A.*$&forward=true&lastId=0&limit=5")
+        when().get(url + "http://localhost:8888/hello/contacts?nameFilter=^A.*$&forward=true&lastId=0&limit=5")
               .then().statusCode(200).contentType(contentType)
               .body("name", Matchers.hasItems("Aleksandr"));
     }

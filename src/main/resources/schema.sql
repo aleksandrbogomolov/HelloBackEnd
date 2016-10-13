@@ -1,16 +1,24 @@
 DROP TABLE IF EXISTS contacts;
-DROP TABLE IF EXISTS rates;
-DROP SEQUENCE IF EXISTS global_seq;
-
-CREATE SEQUENCE global_seq START 10;
 
 CREATE TABLE contacts (
-  id   BIGINT       NOT NULL PRIMARY KEY DEFAULT nextval('global_seq'),
+  id   BIGSERIAL    NOT NULL PRIMARY KEY,
   name VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE rates (
-  id     INTEGER      NOT NULL PRIMARY KEY DEFAULT nextval('global_seq'),
-  regex  VARCHAR(100) NOT NULL,
-  rate INTEGER      NOT NULL
-)
+CREATE OR REPLACE FUNCTION get_forward(BIGINT)
+  RETURNS REFCURSOR AS 'DECLARE ref REFCURSOR;
+BEGIN OPEN ref FOR SELECT *
+                   FROM contacts
+                   WHERE id > $1
+                   ORDER BY id;
+  RETURN ref;
+END;' LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_back(BIGINT)
+  RETURNS REFCURSOR AS 'DECLARE ref REFCURSOR;
+BEGIN OPEN ref FOR SELECT *
+                   FROM contacts
+                   WHERE id < $1
+                   ORDER BY id DESC;
+  RETURN ref;
+END;' LANGUAGE plpgsql;
