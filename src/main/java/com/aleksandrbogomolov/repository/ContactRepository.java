@@ -9,7 +9,5 @@ import java.util.List;
  */
 public interface ContactRepository {
 
-    List<Contact> getForwardLimitAll(long lastId, int limit);
-
-    List<Contact> getBackLimitAll(long lastId, int limit);
+    List<Contact> getFilteredContacts(String regex, boolean forward, long lastId, int limit);
 }
